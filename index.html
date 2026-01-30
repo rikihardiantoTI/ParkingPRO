@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistem Manajemen Parkir Modern - Kelola parkir dengan mudah dan efisien">
+    <title>ParkirPro - Sistem Manajemen Parkir</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/multi-floor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2><i class="fas fa-parking"></i> ParkirPro</h2>
+            </div>
+            <div class="logo-container" style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="assets/logo.svg" alt="ParkirPro Logo" class="logo-icon" style="width: 80px; height: 80px;">
+            </div>
+            <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-secondary);">Login Sistem Parkir</h3>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="username" placeholder="Masukkan username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-key"></i> Password</label>
+                    <input type="password" id="password" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <div id="loginError" class="error-message"></div>
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+                Demo: admin / admin123
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-brand">
+                    <div class="logo">
+                        <img src="assets/logo.svg" alt="ParkirPro Logo" class="logo-icon">
+                        <span class="logo-text">ParkirPro</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="clock" id="clock">
+                        <i class="far fa-clock"></i>
+                        <span>Loading...</span>
+                    </div>
+                    <button id="themeToggle" class="btn-icon" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userInfo">Admin</span>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-secondary btn-small">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard -->
+        <main class="main-content">
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stat-card stat-card-primary" data-aos="fade-up">
+                    <div class="stat-icon"><i class="fas fa-parking"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Slot</h3>
+                        <p class="stat-value" id="totalSlots">50</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-success" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h3>Slot Kosong</h3>
+                        <p class="stat-value" id="emptySlots">50</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-danger" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stat-info">
+                        <h3>Slot Terisi</h3>
+                        <p class="stat-value" id="occupiedSlots">0</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-warning" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-info">
+                        <h3>Pendapatan Hari Ini</h3>
+                        <p class="stat-value" id="todayRevenue">Rp 0</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-info" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                    <div class="stat-info">
+                        <h3>Occupancy Rate</h3>
+                        <p class="stat-value" id="occupancyRate">0%</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Motor & Mobil Stats -->
+            <section class="stats-section vehicle-stats">
+                <div class="stat-card stat-card-motor" data-aos="fade-up">
+                    <div class="stat-icon"><i class="fas fa-motorcycle"></i></div>
+                    <div class="stat-info">
+                        <h3>Slot Motor</h3>
+                        <p class="stat-value" id="motorSlots">0/0</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-mobil" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-info">
+                        <h3>Slot Mobil</h3>
+                        <p class="stat-value" id="mobilSlots">0/0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="chart-card" data-aos="fade-up">
+                    <h2><i class="fas fa-chart-line"></i> Occupancy Harian</h2>
+                    <div class="chart-container">
+                        <canvas id="occupancyChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card" data-aos="fade-up" data-aos-delay="100">
+                    <h2><i class="fas fa-coins"></i> Pendapatan 7 Hari Terakhir</h2>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions Section -->
+            <section class="actions-section" data-aos="fade-up">
+                <button id="addVehicleBtn" class="btn btn-primary btn-large">
+                    <i class="fas fa-car-side"></i> Input Kendaraan Masuk
+                </button>
+                <button id="resetDailyBtn" class="btn btn-secondary btn-large">
+                    <i class="fas fa-rotate"></i> Reset Data Harian
+                </button>
+                <button id="addFloorBtn" class="btn btn-secondary btn-large">
+                    <i class="fas fa-layer-group"></i> Tambah Lantai
+                </button>
+                <button id="addSlotsBtn" class="btn btn-secondary btn-large">
+                    <i class="fas fa-plus-circle"></i> Tambah Slot
+                </button>
+                <button id="viewHistoryBtn" class="btn btn-secondary btn-large">
+                    <i class="fas fa-history"></i> Riwayat Transaksi
+                </button>
+                <button id="settingsBtn" class="btn btn-secondary btn-large">
+                    <i class="fas fa-cog"></i> Pengaturan
+                </button>
+            </section>
+
+            <!-- Parking Grid -->
+            <section class="parking-section" data-aos="fade-up">
+                <div class="parking-header">
+                    <h2><i class="fas fa-map-marker-alt"></i> Monitoring Slot Parkir</h2>
+                    <div class="parking-controls">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchSlot" placeholder="Cari slot atau plat nomor...">
+                        </div>
+                        <select id="filterSlotStatus" class="filter-select">
+                            <option value="all">Semua Status</option>
+                            <option value="empty">Kosong</option>
+                            <option value="occupied">Terisi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="parking-legend">
+                    <span class="legend-item">
+                        <span class="legend-color empty"><i class="fas fa-check"></i></span>
+                        Kosong
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-color occupied"><i class="fas fa-times"></i></span>
+                        Terisi
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-color motor-slot"><i class="fas fa-motorcycle"></i></span>
+                        Motor
+                    </span>
+                    <span class="legend-item">
+                        <span class="legend-color mobil-slot"><i class="fas fa-car"></i></span>
+                        Mobil
+                    </span>
+                </div>
+                <div id="parkingGrid" class="parking-grid"></div>
+            </section>
+
+            <!-- Notifications -->
+            <div id="notifications" class="notifications"></div>
+        </main>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h2><i class="fas fa-car"></i> Input Kendaraan Masuk</h2>
+                <button class="close">&times;</button>
+            </div>
+            <form id="vehicleForm">
+                <div class="form-group">
+                    <label for="licensePlate"><i class="fas fa-id-card"></i> Nomor Polisi</label>
+                    <input type="text" id="licensePlate" placeholder="B 1234 XYZ" required>
+                    <small>Format: B 1234 XYZ (huruf besar + spasi)</small>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleType"><i class="fas fa-car"></i> Tipe Kendaraan</label>
+                    <select id="vehicleType" required>
+                        <option value="">Pilih Tipe Kendaraan</option>
+                        <option value="motor">🛵 Motor (Rp2.000/jam)</option>
+                        <option value="mobil">🚗 Mobil (Rp5.000/jam)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qrCode"><i class="fas fa-qrcode"></i> QR Code (Opsional)</label>
+                    <div class="input-with-button">
+                        <input type="text" id="qrCode" placeholder="Scan atau input QR Code">
+                        <button type="button" id="scanQRBtn" class="btn btn-secondary">
+                            <i class="fas fa-camera"></i> Scan
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="selectedSlot"><i class="fas fa-parking"></i> Slot Tersedia</label>
+                    <select id="selectedSlot" required>
+                        <option value="">Pilih Slot</option>
+                    </select>
+                    <small>Pilihan slot akan muncul berdasarkan tipe kendaraan yang dipilih</small>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary close-modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vehicle Details Modal -->
+    <div id="vehicleDetailsModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> Detail Kendaraan</h2>
+                <button class="close">&times;</button>
+            </div>
+            <div id="vehicleDetails"></div>
+            <div class="form-actions">
+                <button id="checkoutBtn" class="btn btn-primary">
+                    <i class="fas fa-cash-register"></i> Checkout & Bayar
+                </button>
+                <button type="button" class="btn btn-secondary close-modal">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2><i class="fas fa-money-bill-wave"></i> Pembayaran</h2>
+                <button class="close">&times;</button>
+            </div>
+            <div id="paymentDetails"></div>
+            <div class="qr-payment">
+                <h3><i class="fas fa-qrcode"></i> Scan QRIS untuk Pembayaran</h3>
+                <div id="qrisCode" class="qris-code">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Ctext x='100' y='110' text-anchor='middle' font-size='14' fill='black'%3EQRIS%3C/text%3E%3Ctext x='100' y='130' text-anchor='middle' font-size='10' fill='black'%3EScan di Aplikasi%3C/text%3E%3C/svg%3E" alt="QRIS Code">
+                </div>
+                <p class="payment-amount" id="paymentAmount">Rp 0</p>
+            </div>
+            <div class="form-actions">
+                <button id="confirmPaymentBtn" class="btn btn-success">
+                    <i class="fas fa-check"></i> Konfirmasi Pembayaran
+                </button>
+                <button type="button" class="btn btn-secondary close-modal">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction History Modal -->
+    <div id="historyModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-history"></i> Riwayat Transaksi</h2>
+                <button class="close">&times;</button>
+            </div>
+            <div class="history-controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchHistory" placeholder="Cari nomor polisi, slot...">
+                </div>
+                <div class="date-filters">
+                    <input type="date" id="filterDateFrom" class="date-input">
+                    <span>s/d</span>
+                    <input type="date" id="filterDateTo" class="date-input">
+                    <button id="resetDateFilter" class="btn btn-secondary btn-small">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="export-buttons">
+                    <button id="exportCSVBtn" class="btn btn-secondary btn-small">
+                        <i class="fas fa-file-csv"></i> CSV
+                    </button>
+                    <button id="exportPDFBtn" class="btn btn-secondary btn-small">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button id="exportRevenueBtn" class="btn btn-secondary btn-small">
+                        <i class="fas fa-coins"></i> Pendapatan
+                    </button>
+                </div>
+            </div>
+            <div class="history-tabs">
+                <button class="tab-btn active" data-tab="all">
+                    <i class="fas fa-list"></i> Semua
+                </button>
+                <button class="tab-btn" data-tab="vehicle">
+                    <i class="fas fa-car"></i> Per Kendaraan
+                </button>
+            </div>
+            <div id="vehicleHistorySection" class="vehicle-history-section hidden">
+                <div class="form-group">
+                    <label for="vehicleSearchHistory"><i class="fas fa-car"></i> Cari Nomor Polisi</label>
+                    <input type="text" id="vehicleSearchHistory" placeholder="Masukkan nomor polisi (contoh: B 1234 XYZ)">
+                </div>
+                <div id="vehicleHistoryResults"></div>
+            </div>
+            <div class="table-container">
+                <table id="historyTable" class="history-table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> No</th>
+                            <th><i class="fas fa-sign-in-alt"></i> Waktu Masuk</th>
+                            <th><i class="fas fa-sign-out-alt"></i> Waktu Keluar</th>
+                            <th><i class="fas fa-id-card"></i> Nomor Polisi</th>
+                            <th><i class="fas fa-car"></i> Tipe</th>
+                            <th><i class="fas fa-parking"></i> Slot</th>
+                            <th><i class="fas fa-clock"></i> Durasi</th>
+                            <th><i class="fas fa-money-bill"></i> Biaya</th>
+                            <th><i class="fas fa-flag"></i> Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Floor Modal -->
+    <div id="addFloorModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h2><i class="fas fa-layer-group"></i> Tambah Lantai Baru</h2>
+                <button class="close">&times;</button>
+            </div>
+            <form id="addFloorForm">
+                <div class="form-group">
+                    <label for="newFloorName"><i class="fas fa-building"></i> Nama Lantai</label>
+                    <input type="text" id="newFloorName" placeholder="Contoh: Lantai 3" required>
+                </div>
+                <div class="form-group">
+                    <label for="newFloorType"><i class="fas fa-car"></i> Tipe Kendaraan</label>
+                    <select id="newFloorType" required>
+                        <option value="">Pilih Tipe Kendaraan</option>
+                        <option value="motor">🛵 Khusus Motor</option>
+                        <option value="mobil">🚗 Khusus Mobil</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newFloorRows"><i class="fas fa-th"></i> Jumlah Baris</label>
+                        <input type="number" id="newFloorRows" min="1" max="10" value="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newFloorCols"><i class="fas fa-columns"></i> Jumlah Kolom</label>
+                        <input type="number" id="newFloorCols" min="1" max="20" value="10" required>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Total slot yang akan ditambahkan: <strong id="newFloorTotalSlots">50</strong> slot</span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Lantai
+                    </button>
+                    <button type="button" class="btn btn-secondary close-modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Slots Modal -->
+    <div id="addSlotsModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Tambah Slot Parkir</h2>
+                <button class="close">&times;</button>
+            </div>
+            <form id="addSlotsForm">
+                <div class="form-group">
+                    <label for="addSlotsFloor"><i class="fas fa-layer-group"></i> Pilih Lantai</label>
+                    <select id="addSlotsFloor" required>
+                        <option value="">Pilih Lantai</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="slotsRowsToAdd"><i class="fas fa-th"></i> Baris yang Ditambah</label>
+                        <input type="number" id="slotsRowsToAdd" min="1" max="10" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="slotsColsToAdd"><i class="fas fa-columns"></i> Kolom</label>
+                        <input type="number" id="slotsColsToAdd" min="1" max="20" value="10" required>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Slot yang akan ditambahkan: <strong id="newSlotsCount">10</strong> slot</span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Slot
+                    </button>
+                    <button type="button" class="btn btn-secondary close-modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-medium">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Pengaturan</h2>
+                <button class="close">&times;</button>
+            </div>
+            <form id="settingsForm">
+                <div class="settings-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Tarif Parkir</h3>
+                    <div class="form-group">
+                        <label for="motorRate"><i class="fas fa-motorcycle"></i> Tarif Motor (per jam)</label>
+                        <input type="number" id="motorRate" min="0" step="1000" placeholder="2000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobilRate"><i class="fas fa-car"></i> Tarif Mobil (per jam)</label>
+                        <input type="number" id="mobilRate" min="0" step="1000" placeholder="5000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="minimumRate"><i class="fas fa-coins"></i> Minimum Charge</label>
+                        <input type="number" id="minimumRate" min="0" step="1000" placeholder="2000" required>
+                        <small>Biaya minimum untuk parkir</small>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-secondary close-modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2><i class="fas fa-receipt"></i> Struk Pembayaran</h2>
+                <button class="close">&times;</button>
+            </div>
+            <div id="receiptContent" class="receipt-content"></div>
+            <div class="form-actions">
+                <button id="printReceiptBtn" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button type="button" class="btn btn-secondary close-modal">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner hidden">
+        <div class="spinner-content">
+            <div class="spinner-icon"></div>
+            <p>Memuat...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/parking.js"></script>
+    <script src="js/transaction.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

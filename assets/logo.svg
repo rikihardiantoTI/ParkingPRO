@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <!-- Gradient for background -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3182ce;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c5aa0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradient for car -->
+    <linearGradient id="carGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#bgGradient)" filter="url(#shadow)"/>
+  
+  <!-- Inner ring -->
+  <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+  
+  <!-- P letter for Parking -->
+  <text x="100" y="130" 
+        font-family="Arial, sans-serif" 
+        font-size="80" 
+        font-weight="bold" 
+        fill="url(#carGradient)"
+        text-anchor="middle"
+        filter="url(#glow)">P</text>
+  
+  <!-- Car icon -->
+  <g transform="translate(60, 75)">
+    <!-- Car body -->
+    <path d="M5,35 L10,20 L40,20 L45,35 L80,35 L80,50 L5,50 Z" 
+          fill="url(#carGradient)" 
+          rx="5"/>
+    <!-- Car top -->
+    <path d="M18,20 L25,8 L55,8 L62,20" 
+          fill="none" 
+          stroke="url(#carGradient)" 
+          stroke-width="3" 
+          stroke-linecap="round"/>
+    <!-- Windows -->
+    <path d="M20,19 L26,10 L39,10 L39,19" fill="#3182ce" opacity="0.8"/>
+    <path d="M41,19 L41,10 L54,10 L60,19" fill="#3182ce" opacity="0.8"/>
+    <!-- Wheels -->
+    <circle cx="18" cy="50" r="8" fill="#2d3748"/>
+    <circle cx="18" cy="50" r="4" fill="#718096"/>
+    <circle cx="67" cy="50" r="8" fill="#2d3748"/>
+    <circle cx="67" cy="50" r="4" fill="#718096"/>
+    <!-- Headlights -->
+    <rect x="73" y="38" width="6" height="4" rx="1" fill="#ffd700"/>
+    <!-- Taillights -->
+    <rect x="5" y="38" width="4" height="4" rx="1" fill="#ef4444"/>
+  </g>
+  
+  <!-- Small decorative elements -->
+  <circle cx="45" cy="170" r="4" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="155" cy="170" r="4" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="170" cy="45" r="3" fill="rgba(255,255,255,0.2)"/>
+  <circle cx="30" cy="45" r="3" fill="rgba(255,255,255,0.2)"/>
+</svg>

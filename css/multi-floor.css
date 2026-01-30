@@ -1,0 +1,263 @@
+/* ═══════════════════════════════════════════════════════════════
+   MULTI-FLOOR PARKING STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.parking-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* Parking Floor Styles */
+.parking-floor {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-base);
+}
+
+.parking-floor:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.parking-floor[data-floor-type="motor"] {
+    border-left: 4px solid #ed8936;
+}
+
+.parking-floor[data-floor-type="mobil"] {
+    border-left: 4px solid #3182ce;
+}
+
+.floor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.floor-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.floor-title i {
+    color: var(--primary-color);
+}
+
+.floor-type {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.parking-floor[data-floor-type="motor"] .floor-type {
+    background: rgba(237, 137, 54, 0.15);
+    color: #ed8936;
+}
+
+.parking-floor[data-floor-type="mobil"] .floor-type {
+    background: rgba(49, 130, 206, 0.15);
+    color: #3182ce;
+}
+
+.floor-stats {
+    display: flex;
+    gap: var(--spacing-sm);
+    font-size: 0.8rem;
+}
+
+.floor-stat {
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+.floor-stat.occupied {
+    background: rgba(245, 101, 101, 0.15);
+    color: var(--danger-color);
+}
+
+.floor-stat.total {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: var(--spacing-xs);
+}
+
+/* Compact parking slot styles */
+.parking-slot {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-color);
+    padding: 2px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+.parking-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.parking-slot.empty {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.2), rgba(72, 187, 120, 0.3));
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.parking-slot.occupied {
+    background: linear-gradient(135deg, rgba(245, 101, 101, 0.2), rgba(245, 101, 101, 0.3));
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.parking-slot .slot-icon {
+    font-size: 0.9rem;
+    margin-bottom: 1px;
+}
+
+.parking-slot .slot-id {
+    font-size: 0.6rem;
+    font-family: var(--font-mono);
+}
+
+.parking-slot .slot-info {
+    font-size: 0.55rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.parking-slot .slot-timer {
+    font-size: 0.5rem;
+}
+
+/* Vehicle Stats Section */
+.vehicle-stats {
+    margin-top: var(--spacing-md);
+}
+
+.stat-card-motor {
+    border-left-color: #ed8936;
+}
+
+.stat-card-motor .stat-icon {
+    background: linear-gradient(135deg, rgba(237, 137, 54, 0.1), rgba(237, 137, 54, 0.2));
+    color: #ed8936;
+}
+
+.stat-card-mobil {
+    border-left-color: #3182ce;
+}
+
+.stat-card-mobil .stat-icon {
+    background: linear-gradient(135deg, rgba(49, 130, 206, 0.1), rgba(49, 130, 206, 0.2));
+    color: #3182ce;
+}
+
+/* Legend colors for motor/mobil */
+.legend-color.motor-slot {
+    background: rgba(237, 137, 54, 0.3);
+    border: 2px solid #ed8936;
+}
+
+.legend-color.mobil-slot {
+    background: rgba(49, 130, 206, 0.3);
+    border: 2px solid #3182ce;
+}
+
+/* Form Row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+/* Info Box */
+.info-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(49, 130, 206, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.info-box i {
+    font-size: 1.25rem;
+}
+
+.info-box strong {
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .slots-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .slots-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .slots-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 3px;
+    }
+    
+    .floor-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .parking-floor {
+        padding: var(--spacing-sm);
+    }
+    
+    .floor-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .slots-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
